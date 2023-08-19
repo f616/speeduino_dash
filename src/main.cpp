@@ -7,6 +7,8 @@
 SpeeduinoData SData(&Serial1);
 DwinData dwinData(&Serial2);
 
+long lastReads[NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES];
+
 void setup()
 {
     Serial.begin(115200, SERIAL_8N1, RXD0, TXD0);  // Integrated Serial
@@ -26,35 +28,40 @@ void setup()
 void loop()
 {
     char buffer[200];
-    static long lastRead = millis();
-    static long freq = 5;
     char sValueName[80];
 
     for (int i = 0; i < NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES; i++)
     {
         if (speeduinodDevice[i].selected)
         {
-            memset(sValueName, 0, sizeof sValueName); // filling the array with meaningless values
-            memset(buffer, 0, sizeof buffer);         // filling the array with meaningless values
-
-            SpeeduinoResult resultGetFromSpeed = SData.getDataFromLocation(speeduinodDevice[i].lowByte, speeduinodDevice[i].numBytes);
-            if (resultGetFromSpeed.errorFree)
+            if ((millis() - lastReads[i]) > speeduinodDevice[i].freqRate)
             {
-                bool resultDwin = dwinData.sendDataToDwin(speeduinodDevice[i].dwinVPaddr1, speeduinodDevice[i].dwinVPaddr2, resultGetFromSpeed.sValueByte1, resultGetFromSpeed.sValueByte2);
-                if (DEBUG_MODE >= 1)
+                memset(sValueName, 0, sizeof sValueName); // filling the array with meaningless values
+                memset(buffer, 0, sizeof buffer);         // filling the array with meaningless values
+
+                SpeeduinoResult resultGetFromSpeed = SData.getDataFromLocation(speeduinodDevice[i].lowByte, speeduinodDevice[i].numBytes);
+                if (resultGetFromSpeed.errorFree)
                 {
-                    long value = resultGetFromSpeed.sValue;
-                    strcpy_P(sValueName, speeduinodDevice[i].name);
-                    Serial.print("+>\t");
-                    Serial.print(value);
-                    Serial.print("\t+<\t");
-                    Serial.print(i);
-                    Serial.print("\t|\t");
-                    Serial.print(speeduinodDevice[i].lowByte);
-                    Serial.print("\t");
-                    Serial.print(speeduinodDevice[i].numBytes);
-                    Serial.print("\t|\t");
-                    Serial.println(sValueName);
+                    bool resultDwin = dwinData.sendDataToDwin(speeduinodDevice[i].dwinVPaddr1, speeduinodDevice[i].dwinVPaddr2, resultGetFromSpeed.sValueByte1, resultGetFromSpeed.sValueByte2);
+                    // if (resultDwin)
+                    {
+                        lastReads[i] = millis();
+                    }
+                    if (DEBUG_MODE >= 1)
+                    {
+                        long value = resultGetFromSpeed.sValue;
+                        strcpy_P(sValueName, speeduinodDevice[i].name);
+                        Serial.print("+>\t");
+                        Serial.print(value);
+                        Serial.print("\t+<\t");
+                        Serial.print(i);
+                        Serial.print("\t|\t");
+                        Serial.print(speeduinodDevice[i].lowByte);
+                        Serial.print("\t");
+                        Serial.print(speeduinodDevice[i].numBytes);
+                        Serial.print("\t|\t");
+                        Serial.println(sValueName);
+                    }
                 }
             }
         }
