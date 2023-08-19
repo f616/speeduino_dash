@@ -43,7 +43,7 @@ void loop()
                 if (resultGetFromSpeed.errorFree)
                 {
                     bool resultDwin = dwinData.sendDataToDwin(speeduinodDevice[i].dwinVPaddr1, speeduinodDevice[i].dwinVPaddr2, resultGetFromSpeed.sValueByte1, resultGetFromSpeed.sValueByte2);
-                    // if (resultDwin)
+                    if (resultDwin)
                     {
                         lastReads[i] = millis();
                     }
