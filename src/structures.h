@@ -8,6 +8,7 @@ typedef struct _speeduinoDataList speeduinoDataList;
 struct _speeduinoDataList
 {
     const boolean selected;
+    const uint16_t freqRate;
     const uint16_t lowByte;
     const uint16_t numBytes;
     const char *name PROGMEM;
