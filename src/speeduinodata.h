@@ -21,6 +21,9 @@ private:
 
     SpeeduinoResult getSpeeduinoData(byte getData[2]);
     // It gets the data from the speeduino.
+
+    SpeeduinoResult transformsData(byte dataStart, int value);
+    // It transforms the data to a more meaningful value
 };
 
 #endif

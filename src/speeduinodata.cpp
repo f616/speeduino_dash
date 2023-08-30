@@ -91,11 +91,13 @@ SpeeduinoResult SpeeduinoData::getSpeeduinoData(byte getData[2])
                     Serial.println(buffer);
                 }
             }
+            // Transforms the value to a more meaningful value
+            SpeeduinoResult transformedData = transformsData(dataStart, speedValue);
             received = true;
-            result.sValue = speedValue;
-            result.sValueByte1 = secondByte;
-            result.sValueByte2 = firstByte;
-            result.errorFree = true;
+            result.sValue = transformedData.sValue;
+            result.sValueByte1 = transformedData.sValueByte1;
+            result.sValueByte2 = transformedData.sValueByte2;
+            result.errorFree = transformedData.errorFree;
         }
     }
     if (received != true)
@@ -130,5 +132,29 @@ SpeeduinoResult SpeeduinoData::getDataFromLocation(byte location, byte length)
     result.errorFree = false;
     result.sValue = 0;
     result = getSpeeduinoData(dataToGet);
+    return result;
+}
+
+SpeeduinoResult SpeeduinoData::transformsData(byte dataStart, int value)
+{
+    SpeeduinoResult result;
+
+    result.errorFree = false;
+    result.sValue = 0;
+    switch (dataStart)
+    {
+    case 6:     // IAT: must be subtracted by the CALIBRATION_TEMPERATURE_OFFSET (40C)
+    case 7:     // coolant temp: must be subtracted by the CALIBRATION_TEMPERATURE_OFFSET (40C)
+    case 111:   // fuelTemp: must be subtracted by the CALIBRATION_TEMPERATURE_OFFSET (40C)
+        value = value - 40;
+        break;
+    default:
+        value = value;
+        break;
+    }
+    result.sValue = value;
+    result.sValueByte1 = highByte(value);
+    result.sValueByte2 = lowByte(value);
+    result.errorFree = true;
     return result;
 }
