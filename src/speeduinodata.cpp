@@ -35,7 +35,7 @@ SpeeduinoResult SpeeduinoData::getSpeeduinoData(byte getData[2])
     byte sendSequence[] = {requestData, canID, rCommand, startLSB, startMSB, lengthLSB, lengthMSB};
     _port->write(sendSequence, 7); // send the sequence to the ESP32
 
-    delay(20); // try waiting for response
+    delay(5); // try waiting for response
 
     uint8_t bytesRead = _port->readBytes(speedyResponse, 2 + noBytes);
     byte firstByte = speedyResponse[0];
@@ -80,8 +80,6 @@ SpeeduinoResult SpeeduinoData::getSpeeduinoData(byte getData[2])
             else if (noBytes == 2)
             {
                 // there are two bytes of data so have to do two reads and join the bytes into an integer
-                // byte firstByte = _port->read();
-                // byte secondByte = _port->read();
                 firstByte = speedyResponse[2];
                 secondByte = speedyResponse[3];
                 speedValue = (secondByte << 8) | firstByte; // join high and low bytes into integer value
@@ -143,15 +141,16 @@ SpeeduinoResult SpeeduinoData::transformsData(byte dataStart, int value)
     result.sValue = 0;
     switch (dataStart)
     {
-    case 6:     // IAT: must be subtracted by the CALIBRATION_TEMPERATURE_OFFSET (40C)
-    case 7:     // coolant temp: must be subtracted by the CALIBRATION_TEMPERATURE_OFFSET (40C)
-    case 111:   // fuelTemp: must be subtracted by the CALIBRATION_TEMPERATURE_OFFSET (40C)
+    case 6:   // IAT: must be subtracted by the CALIBRATION_TEMPERATURE_OFFSET (40C)
+    case 7:   // coolant temp: must be subtracted by the CALIBRATION_TEMPERATURE_OFFSET (40C)
+    case 111: // fuelTemp: must be subtracted by the CALIBRATION_TEMPERATURE_OFFSET (40C)
         value = value - 40;
         break;
     default:
         value = value;
         break;
     }
+
     result.sValue = value;
     result.sValueByte1 = highByte(value);
     result.sValueByte2 = lowByte(value);
