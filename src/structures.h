@@ -12,9 +12,7 @@ struct _speeduinoDataList
     const uint16_t lowByte;
     const uint16_t numBytes;
     const char *name PROGMEM;
-    const char dwinVPaddr1;
-    const char dwinVPaddr2;
-    const char dwinVPaddr;
+    const uint16_t dwinValueVPaddr;
 };
 
 typedef struct _sttResult SpeeduinoResult;
