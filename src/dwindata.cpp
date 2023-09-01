@@ -8,9 +8,22 @@ DwinData::DwinData(Stream *port)
     _port = port;
 }
 
-boolean DwinData::sendDataToDwin(char vpAddr1, char vpAddr2, char value1, char value2)
+boolean DwinData::sendDataToDwin(uint16_t vpAddr, char value1, char value2)
 {
-    byte frame[] = {0x5A, 0xA5, 0x05, 0x82, vpAddr1, vpAddr2, value1, value2};
+    byte vpAddrLow = lowByte(vpAddr); // high and low bytes for DWIN VPAddr
+    byte vpAddrHigh = highByte(vpAddr);
+    byte frame[] = {0x5A, 0xA5, 0x05, 0x82, vpAddrHigh, vpAddrLow, value1, value2};
+    if (DEBUG_MODE >= 2)
+    {
+        Serial.print("-->\tsendDataToDwin vpAddr\t\t");
+        Serial.print("0x");
+        Serial.print(highByte(vpAddr), HEX);
+        Serial.print("\t0x");
+        Serial.print(lowByte(vpAddr), HEX);
+        Serial.print("\t0x");
+        Serial.print(vpAddr, HEX);
+        Serial.println("");
+    }
     boolean resultWr = writeDwin(frame);
     return resultWr;
 }

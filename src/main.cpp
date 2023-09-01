@@ -42,7 +42,7 @@ void loop()
                 SpeeduinoResult resultGetFromSpeed = SData.getDataFromLocation(speeduinodDevice[i].lowByte, speeduinodDevice[i].numBytes);
                 if (resultGetFromSpeed.errorFree)
                 {
-                    bool resultDwin = dwinData.sendDataToDwin(speeduinodDevice[i].dwinVPaddr1, speeduinodDevice[i].dwinVPaddr2, resultGetFromSpeed.sValueByte1, resultGetFromSpeed.sValueByte2);
+                    bool resultDwin = dwinData.sendDataToDwin(speeduinodDevice[i].dwinValueVPaddr, resultGetFromSpeed.sValueByte1, resultGetFromSpeed.sValueByte2);
                     if (resultDwin)
                     {
                         lastReads[i] = millis();
