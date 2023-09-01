@@ -56,6 +56,8 @@ void loop()
                         Serial.print("\t+<\t");
                         Serial.print(i);
                         Serial.print("\t|\t");
+                        Serial.print(speeduinodDevice[i].freqRate);
+                        Serial.print("\t|\t");
                         Serial.print(speeduinodDevice[i].lowByte);
                         Serial.print("\t");
                         Serial.print(speeduinodDevice[i].numBytes);
