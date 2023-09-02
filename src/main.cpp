@@ -23,6 +23,7 @@ void setup()
         Serial.println("Serial2 Txd is on pin: " + String(TXD2));
         Serial.println("Serial2 Rxd is on pin: " + String(RXD2));
     }
+    dwinData.resetToDefault(speeduinodDevice);      // set facotry value to DWIN (this must be removed after implement a feature to save the values in DWIN memory)
 }
 
 void loop()

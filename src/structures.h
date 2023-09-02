@@ -13,6 +13,8 @@ struct _speeduinoDataList
     const uint16_t numBytes;
     const char *name PROGMEM;
     const uint16_t dwinValueVPaddr;
+    const uint16_t dwinFreqVPaddr;
+    const uint16_t dwinToggleVPaddr;
 };
 
 typedef struct _sttResult SpeeduinoResult;
