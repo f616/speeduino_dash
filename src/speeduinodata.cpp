@@ -55,7 +55,6 @@ SpeeduinoResult SpeeduinoData::getSpeeduinoData(byte getData[2])
 
     if (firstByte == 0x72) // 0x72 (114) is confirmation, we  have data back, so process it
     {
-        // byte dataTypeConfirmationByte = _port->read(); // next byte in buffer should be the data type confirmation. ignore for now
         byte dataTypeConfirmationByte = speedyResponse[1]; // next byte in buffer should be the data type confirmation. ignore for now
         if (DEBUG_MODE >= 2)
         {

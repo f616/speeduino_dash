@@ -18,6 +18,9 @@ public:
     // Receive the information to send to the DWIN display and buld the frame to
     // send through the private writeDwin method.
 
+    DwinReading readDataFromDwin();
+    // reads the data from the DWIN and passes it to be processed in the next function
+
 private:
     // private methods
     Stream *_port;
@@ -28,3 +31,15 @@ private:
 };
 
 #endif
+
+/*
+
+5A A5 06 83 01 08 01 00 01
+5A A5 06 83 01 08 01 00 00
+
+5A A5 06 83 01 04 01 00 64
+5A A5 06 83 01 04 01 00 C8
+5A A5 06 83 01 04 01 01 2C
+5A A5 06 83 01 04 01 01 90
+
+*/

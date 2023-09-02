@@ -26,4 +26,13 @@ struct _sttResult
     boolean errorFree;
 };
 
+typedef struct _sttDwinRead DwinReading;
+struct _sttDwinRead
+{
+    long Value;
+    byte vpAddr1;
+    byte vpAddr2;
+    boolean errorFree;
+};
+
 #endif

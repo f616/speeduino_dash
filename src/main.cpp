@@ -9,11 +9,35 @@ DwinData dwinData(&Serial2);
 
 long lastReads[NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES];
 
+TaskHandle_t TaskReadDwin;
+
+void TaskReadDwinCode(void *pvParameters)
+{
+    Serial.print("TaskReadDwinCode running on core ");
+    Serial.println(xPortGetCoreID());
+
+    for (;;)
+    {
+        DwinReading dwinRData = dwinData.readDataFromDwin();
+        delay(10);
+    }
+}
+
 void setup()
 {
     Serial.begin(115200, SERIAL_8N1, RXD0, TXD0);  // Integrated Serial
     Serial1.begin(115200, SERIAL_8N1, RXD1, TXD1); // Speeduino
     Serial2.begin(115200, SERIAL_8N1, RXD2, TXD2); // DWIN Display
+
+    xTaskCreatePinnedToCore(
+        TaskReadDwinCode, /* Task function. */
+        "TaskReadDwin",   /* name of task. */
+        100000,           /* Stack size of task */
+        NULL,             /* parameter of the task */
+        1,                /* priority of the task */
+        &TaskReadDwin,    /* Task handle to keep track of created task */
+        0);               /* pin task to core 0 */
+
     if (DEBUG_MODE >= 1)
     {
         Serial.println("Serial Txd is on pin: " + String(TXD0));
@@ -23,7 +47,7 @@ void setup()
         Serial.println("Serial2 Txd is on pin: " + String(TXD2));
         Serial.println("Serial2 Rxd is on pin: " + String(RXD2));
     }
-    dwinData.resetToDefault(speeduinodDevice);      // set facotry value to DWIN (this must be removed after implement a feature to save the values in DWIN memory)
+    dwinData.resetToDefault(speeduinodDevice); // set facotry value to DWIN (this must be removed after implement a feature to save the values in DWIN memory)
 }
 
 void loop()
@@ -33,6 +57,7 @@ void loop()
 
     for (int i = 0; i < NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES; i++)
     {
+        // DwinReading dwinRData = dwinData.readDataFromDwin();
         if (speeduinodDevice[i].selected)
         {
             if ((millis() - lastReads[i]) > speeduinodDevice[i].freqRate)
@@ -48,7 +73,7 @@ void loop()
                     {
                         lastReads[i] = millis();
                     }
-                    if (DEBUG_MODE >= 1)
+                    if (DEBUG_MODE >= 2)
                     {
                         long value = resultGetFromSpeed.sValue;
                         strcpy_P(sValueName, speeduinodDevice[i].name);
