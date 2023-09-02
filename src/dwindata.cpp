@@ -42,6 +42,21 @@ boolean DwinData::resetToDefault(speeduinoDataList *data)
             Serial.println("");
         }
         sendDataToDwin(vpAddr, value1, value2);
+        vpAddr = data[i].dwinValueVPaddr;
+        value1 = 0;
+        value2 = 0;
+        if (DEBUG_MODE >= 2)
+        {
+            char tmp[24];
+            Serial.print("-->\tresetToDefault\tValues\t");
+            Serial.print(i);
+            sprintf(tmp, "\t0x%.4X\t0x%.2X\t0x%.2X", vpAddr, value1, value2);
+            Serial.print(tmp);
+            Serial.print("\t");
+            Serial.print(data[i].name);
+            Serial.println("");
+        }
+        sendDataToDwin(vpAddr, value1, value2);
     }
     return true;
 }
@@ -100,6 +115,9 @@ DwinReading DwinData::readDataFromDwin()
     // Serial.println("Begin Data Reading... ");
     DwinReading result;
     result.errorFree = false;
+    result.Value = 0;
+    result.vpAddr = 0;
+
     byte dwinPayload[10];
     memset(dwinPayload, 0, sizeof dwinPayload); // filling the array with meaningless values
 
@@ -119,7 +137,12 @@ DwinReading DwinData::readDataFromDwin()
                 {
                     dwinPayload[i] = _port->read();
                 }
-                if (DEBUG_MODE >= 1)
+
+                result.errorFree = true;
+                result.Value = (dwinPayload[3] << 8) | dwinPayload[4];  // join high and low bytes into integer value
+                result.vpAddr = (dwinPayload[0] << 8) | dwinPayload[1]; // join high and low bytes into integer value
+
+                if (DEBUG_MODE >= 2)
                 {
                     Serial.print("-->\tRead from DWIN\tlength: ");
                     Serial.print(adjDataLength + 1);
@@ -134,8 +157,28 @@ DwinReading DwinData::readDataFromDwin()
                         Serial.print(tmp);
                     }
                     Serial.println("");
+                    if (DEBUG_MODE >= 2)
+                    {
+                        char tmp[24];
+                        sprintf(tmp, "1(1):\t0x%.2X ", firstByte);
+                        Serial.println(tmp);
+                        sprintf(tmp, "2(2):\t0x%.2X ", secondByte);
+                        Serial.println(tmp);
+                        sprintf(tmp, "3(3):\t0x%.2X ", thirdByte);
+                        Serial.println(tmp);
+                        sprintf(tmp, "4(4):\t0x%.2X ", forthByte);
+                        Serial.println(tmp);
+                        for (int j = 0; j < adjDataLength; j++)
+                        {
+                            sprintf(tmp, "%i(%i):\t0x%.2X ", j + 5, j, dwinPayload[j]);
+                            Serial.println(tmp);
+                        }
+                        sprintf(tmp, "Addr:\t0x%.4X ", result.vpAddr);
+                        Serial.println(tmp);
+                        sprintf(tmp, "Value:\t%i", result.Value);
+                        Serial.println(tmp);
+                    }
                 }
-                result.errorFree = true;
             }
         }
     }

@@ -11,6 +11,40 @@ long lastReads[NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES];
 
 TaskHandle_t TaskReadDwin;
 
+void updSpeeduinoVar(int16_t value, int16_t addr)
+{
+    for (int i = 0; i < NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES; i++)
+    {
+        if (speeduinodDevice[i].dwinFreqVPaddr == addr)
+        {
+            Serial.println("** faz update à variável ** freq");
+            speeduinodDevice[i].freqRate = value;
+            break;
+        }
+        if (speeduinodDevice[i].dwinToggleVPaddr == addr)
+        {
+            Serial.println("** faz update à variável ** toggle");
+            boolean bValue = false;
+            if (value > 0)
+            {
+                bValue = true;
+            }
+            else
+            {
+                bValue = false;
+            }
+            speeduinodDevice[i].selected = bValue;
+            break;
+        }
+    }
+    if (DEBUG_MODE >= 1)
+    {
+        char tmp[40];
+        sprintf(tmp, "Addr:\t0x%.4X\tValue:\t%i", addr, value);
+        Serial.println(tmp);
+    }
+}
+
 void TaskReadDwinCode(void *pvParameters)
 {
     Serial.print("TaskReadDwinCode running on core ");
@@ -19,6 +53,16 @@ void TaskReadDwinCode(void *pvParameters)
     for (;;)
     {
         DwinReading dwinRData = dwinData.readDataFromDwin();
+        if (dwinRData.errorFree)
+        {
+            if (DEBUG_MODE >= 2)
+            {
+                char tmp[40];
+                sprintf(tmp, "Addr:\t0x%.4X\tValue:\t%i", dwinRData.vpAddr, dwinRData.Value);
+                Serial.println(tmp);
+            }
+            updSpeeduinoVar(dwinRData.Value, dwinRData.vpAddr);
+        }
         delay(10);
     }
 }
@@ -32,7 +76,7 @@ void setup()
     xTaskCreatePinnedToCore(
         TaskReadDwinCode, /* Task function. */
         "TaskReadDwin",   /* name of task. */
-        100000,           /* Stack size of task */
+        40000,            /* Stack size of task */
         NULL,             /* parameter of the task */
         1,                /* priority of the task */
         &TaskReadDwin,    /* Task handle to keep track of created task */
@@ -57,7 +101,6 @@ void loop()
 
     for (int i = 0; i < NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES; i++)
     {
-        // DwinReading dwinRData = dwinData.readDataFromDwin();
         if (speeduinodDevice[i].selected)
         {
             if ((millis() - lastReads[i]) > speeduinodDevice[i].freqRate)

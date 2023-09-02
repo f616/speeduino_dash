@@ -7,8 +7,8 @@
 typedef struct _speeduinoDataList speeduinoDataList;
 struct _speeduinoDataList
 {
-    const boolean selected;
-    const uint16_t freqRate;
+    boolean selected;
+    uint16_t freqRate;
     const uint16_t lowByte;
     const uint16_t numBytes;
     const char *name PROGMEM;
@@ -29,9 +29,8 @@ struct _sttResult
 typedef struct _sttDwinRead DwinReading;
 struct _sttDwinRead
 {
-    long Value;
-    byte vpAddr1;
-    byte vpAddr2;
+    int16_t Value;
+    int16_t vpAddr;
     boolean errorFree;
 };
 
