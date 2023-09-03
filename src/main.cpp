@@ -94,14 +94,18 @@ void factoryResetRebootEsp(boolean reset)
 
 void processDwinData(int16_t value, int16_t addr)
 {
-    if (addr == 9000 && value == 1)
+    if (addr == 0xFFFF9000 && value == 0x00F1) // reboot ESP32
     {
-        // reboot ESP32
+        if (DEBUG_MODE >= 1)
+        {
+            char tmp[40];
+            sprintf(tmp, "Reboot\tAddr:\t0x%.4X\tValue:\t0x%.4X", addr, value);
+            Serial.println(tmp);
+        }
         factoryResetRebootEsp(false);
     }
-    else if (addr == 9010 && value == 1)
+    else if (addr == 0xFFFF9010 && value == 0x00F1) // factory reset the values
     {
-        // factory reset the values
         /* Replaced by the nvs_flash_erase() + nvs_flash_init() + ESP.restart()
         // Requires further tests to check if works as expected
         for (int i = 0; i < NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES; i++)
@@ -111,6 +115,12 @@ void processDwinData(int16_t value, int16_t addr)
         }
         dwinData.resetToDefault(speeduinodDeviceFactoryDefaults, speeduinodDeviceFreq, speeduinodDeviceToggle);
         */
+        if (DEBUG_MODE >= 1)
+        {
+            char tmp[40];
+            sprintf(tmp, "Reset\tAddr:\t0x%.4X\tValue:\t0x%.4X", addr, value);
+            Serial.println(tmp);
+        }
         factoryResetRebootEsp(true);
     }
     else
