@@ -17,13 +17,13 @@ void updSpeeduinoVar(int16_t value, int16_t addr)
     {
         if (speeduinodDevice[i].dwinFreqVPaddr == addr)
         {
-            Serial.println("** faz update à variável ** freq");
+            // Serial.println("** faz update à variável ** freq");
             speeduinodDevice[i].freqRate = value;
             break;
         }
         if (speeduinodDevice[i].dwinToggleVPaddr == addr)
         {
-            Serial.println("** faz update à variável ** toggle");
+            // Serial.println("** faz update à variável ** toggle");
             boolean bValue = false;
             if (value > 0)
             {
@@ -32,6 +32,7 @@ void updSpeeduinoVar(int16_t value, int16_t addr)
             else
             {
                 bValue = false;
+                dwinData.sendDataToDwin(speeduinodDevice[i].dwinValueVPaddr, 0, 0); // sets the value to zero in DWIN
             }
             speeduinodDevice[i].selected = bValue;
             break;
@@ -42,6 +43,24 @@ void updSpeeduinoVar(int16_t value, int16_t addr)
         char tmp[40];
         sprintf(tmp, "Addr:\t0x%.4X\tValue:\t%i", addr, value);
         Serial.println(tmp);
+    }
+}
+
+void processDwinData(int16_t value, int16_t addr)
+{
+    if (addr == 9000 && value == 1)
+    {
+        // reboot ESP32
+        ESP.restart();
+    }
+    else if (addr == 9010 && value == 1)
+    {
+        // factory reset the values
+        dwinData.resetToDefault(speeduinodDevice);
+    }
+    else
+    {
+        updSpeeduinoVar(value, addr);
     }
 }
 
@@ -61,7 +80,7 @@ void TaskReadDwinCode(void *pvParameters)
                 sprintf(tmp, "Addr:\t0x%.4X\tValue:\t%i", dwinRData.vpAddr, dwinRData.Value);
                 Serial.println(tmp);
             }
-            updSpeeduinoVar(dwinRData.Value, dwinRData.vpAddr);
+            processDwinData(dwinRData.Value, dwinRData.vpAddr);
         }
         delay(10);
     }
@@ -116,7 +135,7 @@ void loop()
                     {
                         lastReads[i] = millis();
                     }
-                    if (DEBUG_MODE >= 2)
+                    if (DEBUG_MODE >= 1)
                     {
                         long value = resultGetFromSpeed.sValue;
                         strcpy_P(sValueName, speeduinodDevice[i].name);

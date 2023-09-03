@@ -99,7 +99,7 @@ const char id088[] PROGMEM = "SDStatus";
 speeduinoDataList speeduinodDevice[NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES + 1] = {
     // Send to DWIN
     // enabled, update freq, Speeduino LowByte, Speeduino NumberOfBytes, Name, DWIN value VPaddr, freq VPaddr, toggle VPaddr
-    {false, 5000, 0, 1, id000, 0x0100, 0x0104, 0x0108},
+    {true, 5000, 0, 1, id000, 0x0100, 0x0104, 0x0108},
     {true, 10, 1, 1, id001, 0x0114, 0x0118, 0x011C},
     {false, 5000, 2, 1, id002, 0x0128, 0x012C, 0x0130},
     {false, 5000, 3, 1, id003, 0x013C, 0x0140, 0x0144},
@@ -112,7 +112,7 @@ speeduinoDataList speeduinodDevice[NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES + 1] = 
     {false, 5000, 11, 1, id010, 0x01C8, 0x01CC, 0x01D0},
     {false, 5000, 12, 1, id011, 0x01DC, 0x01E0, 0x01E4},
     {false, 5000, 13, 1, id012, 0x01F0, 0x01F4, 0x01F8},
-    {false, 100, 14, 2, id013, 0x0204, 0x0208, 0x020C},
+    {true, 100, 14, 2, id013, 0x0204, 0x0208, 0x020C},
     {false, 5000, 16, 1, id014, 0x0218, 0x021C, 0x0220},
     {false, 5000, 17, 1, id015, 0x022C, 0x0230, 0x0234},
     {false, 5000, 18, 1, id016, 0x0240, 0x0244, 0x0248},

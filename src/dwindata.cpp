@@ -157,7 +157,7 @@ DwinReading DwinData::readDataFromDwin()
                         Serial.print(tmp);
                     }
                     Serial.println("");
-                    if (DEBUG_MODE >= 2)
+                    if (DEBUG_MODE >= 3)
                     {
                         char tmp[24];
                         sprintf(tmp, "1(1):\t0x%.2X ", firstByte);
