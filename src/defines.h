@@ -2,7 +2,7 @@
 #define __DEFINES_H__
 
 /* defines */
-#define DEBUG_MODE 1 // 0: OFF, 1: ON, 2: VERBOSE
+#define DEBUG_MODE 1 // 0: OFF, 1: ON, 2: VERBOSE, 3: VERBOSE+
 #define NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES 89
 
 #define RXD0 RX // default RX Serial pin
