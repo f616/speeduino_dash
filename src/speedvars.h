@@ -96,7 +96,7 @@ const char id087[] PROGMEM = "nitrousStatus";
 const char id088[] PROGMEM = "SDStatus";
 
 /* Speeduino available variables through Serial IO Interface */
-speeduinoDataList speeduinodDevice[NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES + 1] = {
+speeduinoDataList speeduinodDeviceFactoryDefaults[NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES + 1] = {
     // Send to DWIN
     // enabled, update freq, Speeduino LowByte, Speeduino NumberOfBytes, Name, DWIN value VPaddr, freq VPaddr, toggle VPaddr
     {true, 5000, 0, 1, id000, 0x0100, 0x0104, 0x0108},
@@ -190,6 +190,9 @@ speeduinoDataList speeduinodDevice[NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES + 1] = 
     {false, 5000, 118, 1, id088, 0x07E0, 0x07E4, 0x07E8}
 
 };
+
+boolean speeduinodDeviceToggle[NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES + 1] = {};
+uint16_t speeduinodDeviceFreq[NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES + 1] = {};
 
 #endif
 

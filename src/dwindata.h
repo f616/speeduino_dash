@@ -11,7 +11,7 @@ public:
     DwinData(Stream *port); // constructor
     // Defines the port used to rsend data to the DWIN display, use e &Serial2 for Serial 2.
 
-    boolean resetToDefault(speeduinoDataList *data);
+    boolean resetToDefault(speeduinoDataList *data, uint16_t *DeviceFreq, boolean *DeviceToggle);
     // Sends the factory reset values to DWIN
 
     boolean sendDataToDwin(uint16_t vpAddr, char value1, char value2);

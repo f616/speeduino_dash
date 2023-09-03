@@ -8,13 +8,13 @@ DwinData::DwinData(Stream *port)
     _port = port;
 }
 
-boolean DwinData::resetToDefault(speeduinoDataList *data)
+boolean DwinData::resetToDefault(speeduinoDataList *data, uint16_t *DeviceFreq, boolean *DeviceToggle)
 {
     for (int i = 0; i < NUMBER_OF_SPEEDUINO_AVAILABLE_DEVICES; i++)
     {
         uint16_t vpAddr = data[i].dwinFreqVPaddr;
-        char value1 = highByte(data[i].freqRate);
-        char value2 = lowByte(data[i].freqRate);
+        char value1 = highByte(DeviceFreq[i]);
+        char value2 = lowByte(DeviceFreq[i]);
         if (DEBUG_MODE >= 2)
         {
             char tmp[24];
@@ -28,8 +28,8 @@ boolean DwinData::resetToDefault(speeduinoDataList *data)
         }
         sendDataToDwin(vpAddr, value1, value2);
         vpAddr = data[i].dwinToggleVPaddr;
-        value1 = highByte(data[i].selected);
-        value2 = lowByte(data[i].selected);
+        value1 = highByte(DeviceToggle[i]);
+        value2 = lowByte(DeviceToggle[i]);
         if (DEBUG_MODE >= 2)
         {
             char tmp[24];
